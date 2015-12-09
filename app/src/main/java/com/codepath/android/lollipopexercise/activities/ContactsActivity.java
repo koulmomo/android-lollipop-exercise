@@ -12,10 +12,13 @@ import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
 import com.codepath.android.lollipopexercise.models.Contact;
 
 import java.util.List;
+import java.util.Stack;
 
 
 public class ContactsActivity extends AppCompatActivity {
     private ContactsAdapter mAdapter;
+    private List<Contact> mContacts = Contact.getContacts();
+    private Stack<Contact> mAddedContacts = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,8 @@ public class ContactsActivity extends AppCompatActivity {
         // There are three LayoutManager provided at the moment: GridLayoutManager, StaggeredGridLayoutManager and LinearLayoutManager.
         rvContacts.setLayoutManager(layout);
 
-        // get data
-        List<Contact> contacts = Contact.getContacts();
-
         // Create an adapter
-        mAdapter = new ContactsAdapter(ContactsActivity.this, contacts);
+        mAdapter = new ContactsAdapter(ContactsActivity.this, mContacts);
 
         // Bind adapter to list
         rvContacts.setAdapter(mAdapter);
@@ -60,5 +60,12 @@ public class ContactsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addContact(MenuItem item) {
+        Contact newContact = Contact.getRandomContact(this);
+        mAddedContacts.push(newContact);
+        mContacts.add(0, newContact);
+        mAdapter.notifyDataSetChanged();
     }
 }
